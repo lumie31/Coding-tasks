@@ -11,8 +11,61 @@
   sequential order while also traveling the shortest distance possible.
 */
 
-function fourPass(stations){
-	//your code goes here. you can do it!
-  console.log(stations)
+function fourPass(stations) {
+
+  const coords = stations.map((pos) => [Math.floor(pos / 10), pos % 10]);
+  // console.log(coords)
   
+  // function to get path between two points
+  function getPath(start, end) {
+    let path = [];
+    let [x1, y1] = start;
+    let [x2, y2] = end;
+    
+    // vertical movement to destination
+    while (x1 !== x2) {
+      path.push(x1 * 10 + y1);
+      if (x1 < x2) {
+        x1 += 1;
+      } else {
+        x1 -= 1;
+      } 
+    }
+    
+    // horizontal movement to destination
+    while (y1 !== y2) {
+      path.push(x1 * 10 + y1);
+      if (y1 < y2) {
+        y1 += 1;
+      } else {
+        y1 -= 1;
+      } 
+    }
+
+    // Add the destination point
+    path.push(x1 * 10 + y1);
+    return path;
+  }
+
+  // Generate full path
+  let fullPath = [];
+  for (let i = 0; i < coords.length - 1; i++) {
+    const segment = getPath(coords[i], coords[i + 1]);
+    if (i === 0) {
+        fullPath = fullPath.concat(segment);
+    } else {
+        fullPath = fullPath.concat(segment.slice(1));
+    }
 }
+
+  // Check for overlaps
+  const seen = new Set();
+  for (let pos of fullPath) {
+    if (seen.has(pos)) return null; // if overlap found
+    seen.add(pos);
+  }
+
+  return fullPath;
+ // console.log(fullPath)
+}
+
